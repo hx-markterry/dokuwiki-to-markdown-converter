@@ -50,7 +50,10 @@ foreach($objects as $name => $object) {
 	if($outputDir) {
 		// Create output subfolder (optional)
                 // Was this here gor recursive code?
-		$outputDir = str_replace($path, substr($path, 0, -5) . "output", $inputDir);
+                
+                // If outputDir was not given as argument, we should define it ourselves..
+                if($outputDir === true)
+			$outputDir = str_replace($path, substr($path, 0, -5) . "output", $inputDir);
             
 		if (!file_exists($outputDir)) mkdir($outputDir, 0777, true);
 		$outFilename = preg_replace('/\.txt$/', '.md', $filename);
