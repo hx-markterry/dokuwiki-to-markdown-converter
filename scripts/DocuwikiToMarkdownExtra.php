@@ -91,12 +91,12 @@ class DocuwikiToMarkdownExtra {
 			// Determine if the line mode is changing
 			$tl = trim($line);
 			if ($lineMode != "code" && preg_match('/^\<code(|\s([a-zA-Z0-9])*)\>$/U', $tl)) {
-				$line = "~~~";
-				if ($tl != "<code>") $line .= " {" . substr($tl, 6, -1) . "}";
+				$line = "```";
+				if ($tl != "<code>") $line .= substr($tl, 6, -1);
 				$lineMode = "code";
 			}
 			else if ($lineMode == "code" && $tl == "</code>") {
-				$line = "~~~";
+				$line = "```";
 				$lineMode = "text";
 			}
 			else if ($lineMode == "text" && strlen($tl) > 0 &&

@@ -16,7 +16,7 @@ class MarkdownCleanup {
 	function process($content) {
 		$content = $this->convertInlineHTML($content);
 		$content = $this->convertUnbalancedHeadlines($content);
-		$content = $this->convertCodeBlocks($content);
+		//$content = $this->convertCodeBlocks($content);
 		$content = $this->newlinesAfterHeadlines($content);
 		$content = $this->newlinesBeforeLists($content);
 		$content = $this->convertApiLinks($content);
@@ -31,10 +31,25 @@ class MarkdownCleanup {
 		$out = array();
 		
 		$lines = $this->getLines($content);
+    $linemode = 'text'; // 'text' or 'code'
+
 		foreach($lines as $i => $line) {
 			// TODO Don't convert HTML in headlines
 			if(!preg_match('/^\t/', $line)) {
-				$lines[$i] = preg_replace('/[\*\'`]*(<[^>]*?>)[\*\'`]*/', '`$1`', $lines[$i]);
+		    if(preg_match('/^```(.*)/', $line)) {
+          // first line of code block
+          if($linemode == 'text') {
+            $linemode = 'code';
+          }
+        }
+        elseif($linemode == 'code' && preg_match('/^```/', $line)){
+          if($linemode == 'code') {
+            $linemode = 'text';
+          }
+        }
+        if($linemode == 'text'){
+				  $lines[$i] = preg_replace('/[\*\'`]*(<[^>]*?>)[\*\'`]*/', '`$1`', $lines[$i]);
+			 }
 			}
 			
 			$out[] = $lines[$i];
